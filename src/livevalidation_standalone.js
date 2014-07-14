@@ -305,7 +305,7 @@ LiveValidation.prototype = {
     	  	if(error instanceof Validate.Error){
     			if( value !== '' || (value === '' && this.displayMessageWhenEmpty) ){
     				this.validationFailed = true;
-					// Opera 10 adds stacktrace after newline
+						// Opera 10 adds stacktrace after newline
     				this.message = error.message.split('\n')[0];
     				isValid = false;
     			}
@@ -323,24 +323,23 @@ LiveValidation.prototype = {
      *  @return {Boolean} - whether the all the validations passed or if one failed
      */
     validate: function(){
-      if(!this.element.disabled){
-		this.beforeValidation();
-		var isValid = this.doValidations();
-		if(isValid){
-			this.beforeValid();
-			this.onValid();
-			this.afterValid();
-			return true;
-		}else {
-			this.beforeInvalid();
-			this.onInvalid();
-			this.afterInvalid();
-			return false;
-		}
-		this.afterValidation();
-	  }else{
-      	return true;
-      }
+			if(!this.element.disabled && !this.element.attributes['data-lv-disabled']){
+				this.beforeValidation();
+				var isValid = this.doValidations();
+				if(isValid){
+					this.beforeValid();
+					this.onValid();
+					this.afterValid();
+				}else {
+					this.beforeInvalid();
+					this.onInvalid();
+					this.afterInvalid();
+				}
+				this.afterValidation();
+				return isValid;
+			}else{
+				return true;
+			}
     },
 	
  /**
@@ -350,7 +349,8 @@ LiveValidation.prototype = {
    */
   enable: function(){
   	this.element.disabled = false;
-	return this;
+  	this.element.attributes['data-lv-disabled'] = false;
+		return this;
   },
   
   /**
@@ -358,10 +358,18 @@ LiveValidation.prototype = {
    *
    *  @return {LiveValidation} - the LiveValidation object for chaining
    */
-  disable: function(){
-  	this.element.disabled = true;
-	this.removeMessageAndFieldClass();
-	return this;
+  disable: function(useAltDisable){
+  	if(useAltDisable === undefined || useAltDisable == null)
+  		useAltDisable = false
+  	
+  	if(useAltDisable){
+  		this.element.attributes['data-lv-disabled'] = true;
+  	}else{
+  		this.element.disabled = true;
+			this.removeMessageAndFieldClass();
+  	}
+
+		return this;
   },
     
     /** Message insertion methods ****************************
