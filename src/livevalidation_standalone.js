@@ -323,7 +323,7 @@ LiveValidation.prototype = {
      *  @return {Boolean} - whether the all the validations passed or if one failed
      */
     validate: function(){
-			if(!this.element.disabled && !this.element.attributes['data-lv-disabled']){
+			if(!this.element.disabled && !this.element.getAttribute('data-lv-disabled')){
 				this.beforeValidation();
 				var isValid = this.doValidations();
 				if(isValid){
@@ -349,7 +349,7 @@ LiveValidation.prototype = {
    */
   enable: function(){
   	this.element.disabled = false;
-  	this.element.attributes['data-lv-disabled'] = false;
+  	this.element.setAttribute('data-lv-disabled', false);
 		return this;
   },
   
@@ -363,7 +363,7 @@ LiveValidation.prototype = {
   		useAltDisable = false
   	
   	if(useAltDisable){
-  		this.element.attributes['data-lv-disabled'] = true;
+  		this.element.setAttribute('data-lv-disabled', true);
   	}else{
   		this.element.disabled = true;
 			this.removeMessageAndFieldClass();
